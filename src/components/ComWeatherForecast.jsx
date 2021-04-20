@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Spin, Row, Col, Input, Button, Divider } from "antd";
+import { Select, Spin, Row, Col, Input, Button, Divider } from "antd";
 import { EnvironmentOutlined, SearchOutlined } from "@ant-design/icons";
 import { FetchDataLocation } from "@services";
+const { Option } = Select;
 
 const ComWeatherForecast = () => {
   const [locationValue, setLocationValue] = useState("");
-  const [resultValue, setResultValue] = useState({
-    msg: "",
-    data: [],
-  });
+  const [woeid, setWoeid] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const [resultValue, setResultValue] = useState([]);
   const [loading, setLoading] = useState(false);
   const updateResultValue = (data, msg) => {
-    const value = { ...resultValue };
-    value.msg = msg;
-    value.data = data;
-    setResultValue(value);
+    setErrorMsg(msg);
+    setResultValue(data);
+    setLoading(false);
   };
   useEffect(updateResultValue, [locationValue]);
   const handleKeyPress = (e) => {
@@ -24,20 +23,27 @@ const ComWeatherForecast = () => {
   };
   const fetchLocationData = () => {
     setLoading(true);
-    const value = { ...resultValue };
-    value.msg = "";
     FetchDataLocation(locationValue)
       .then((response) => {
-        setLoading(false);
         const data = [...response];
         const msg = data.length <= 0 && "Sorry, no this data";
         updateResultValue(data, msg);
       })
       .catch((error) => {
-        setLoading(false);
         const msg = error.msg && error.msg;
         updateResultValue([], msg);
       });
+  };
+  const forMapLocation = (item) => {
+    return (
+      <Option key={item.woeid} value={item.woeid}>
+        {item.title} {item.location_type}
+      </Option>
+    );
+  };
+  const locationChild = resultValue && resultValue.map(forMapLocation);
+  const onChange = (value) => {
+    setWoeid(value);
   };
   return (
     <div className="weatherForecast">
@@ -67,14 +73,21 @@ const ComWeatherForecast = () => {
           </Col>
           <Col span={24}>
             <Spin spinning={loading}>
-              {resultValue.msg && (
-                <p className="color-error">{resultValue.msg}</p>
-              )}
-              {resultValue.data && resultValue.data.length === 1 && (
+              {errorMsg && <p className="color-error">{errorMsg}</p>}
+              {resultValue && resultValue.length === 1 && (
                 <p>
-                  search location： {resultValue.data[0].title}{" "}
-                  {resultValue.data[0].location_type}
+                  search location： {resultValue[0].title}{" "}
+                  {resultValue[0].location_type}
                 </p>
+              )}
+              {resultValue && resultValue.length > 1 && (
+                <Select
+                  placeholder="Over 1 area, Please Select location"
+                  style={{ width: "100%" }}
+                  onChange={(value) => onChange(value)}
+                >
+                  {locationChild}
+                </Select>
               )}
             </Spin>
           </Col>

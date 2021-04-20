@@ -1,0 +1,29 @@
+$tabletWidth: 1400px
+$padWidth: 1200px
+$phoneWidth: 640px
+
+$colorPrimay: #000
+$colorSecondary: #333
+$fontFamilyPrimary: "Source Sans Pro", sans-serif
+
+@mixin tablet
+  @media screen and (max-width: $tabletWidth)
+    @content
+@mixin pad
+  @media screen and (max-width: $padWidth)
+    @content
+@mixin phone
+  @media screen and (max-width: $phoneWidth)
+    @content
+
+html
+  font-size: 14px
+body
+  font-family: $fontFamilyPrimary
+  font-size: 1em
+  @include phone
+    font-size: 1.143em
+#root
+  height: 100%
+  .ant-layout
+    min-height: 100%

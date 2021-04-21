@@ -1,12 +1,12 @@
 import React from "react";
 import LayoutSingle from "@layouts/LayoutSingle";
-import ComWeatherForecast from "@components/ComWeatherForecast";
+import WeatherForecast from "@components/WeatherForecast";
 
-const WeatherForecast = () => {
+const HomePage = () => {
   return (
     <LayoutSingle>
-      <ComWeatherForecast />
+      <WeatherForecast />
     </LayoutSingle>
   );
 };
-export default WeatherForecast;
+export default HomePage;

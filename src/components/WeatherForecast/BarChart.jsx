@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const BarChartCanvas = (props) => {
   const barData = props.barData ? props.barData : [];
-  console.log(barData);
+  const refBar = useRef();
   const fontData = props.fontData
     ? props.fontData
     : {
@@ -11,12 +11,11 @@ const BarChartCanvas = (props) => {
         fontColor: "#333",
       };
   const barChartInit = () => {
-    const canvasWrapper = document.getElementsByClassName(
-      "canvasBarChart__wrapper"
-    );
-    if (canvasWrapper[0]) {
+    const canvasWrapper = refBar.current;
+    if (canvasWrapper) {
+      canvasWrapper.innerHTML = "";
       const canvasElem = document.createElement("canvas");
-      const wrapperWidth = canvasWrapper[0].offsetWidth;
+      const wrapperWidth = canvasWrapper.offsetWidth;
       const sumData = barData.reduce((accumulator, currentValue) => {
         return accumulator + currentValue.value;
       }, 0);
@@ -32,7 +31,7 @@ const BarChartCanvas = (props) => {
       canvasElem.setAttribute("height", wrapperHeight);
       drawBarChart(canvasElem, unitWidth, unitHeight, wrapperHeight);
       drawBarChartText(canvasElem);
-      canvasWrapper[0].appendChild(canvasElem);
+      canvasWrapper.appendChild(canvasElem);
     }
   };
   const drawBarChart = (item, unitWidth, unitHeight, wrapperHeight) => {
@@ -50,7 +49,7 @@ const BarChartCanvas = (props) => {
       );
       ctx.font = `${fontData.fontSize}px ${fontData.fontFamily}`;
       ctx.fillStyle = fontData.fontColor;
-      const text = barData[i].name + barData[i].value;
+      const text = `${barData[i].name} ${barData[i].value}`;
       ctx.fillText(
         text,
         offsetX + unitWidth / 4,
@@ -72,10 +71,10 @@ const BarChartCanvas = (props) => {
       ctx.fillText(barData[i].name + " " + barData[i].value, 25, 20 + 14 * i);
     }
   };
-  useEffect(barChartInit, []);
+  useEffect(barChartInit, [barData]);
   return (
     <div className="canvasBarChart">
-      <div className="canvasBarChart__wrapper"></div>
+      <div ref={refBar} className="canvasBarChart__wrapper"></div>
     </div>
   );
 };

@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 const PieChartPercentCanvas = (props) => {
   const pieData = props.pieData ? props.pieData : [];
+  const refPie = useRef();
   const pieChartInit = () => {
-    const canvasWrapper = document.getElementsByClassName(
-      "canvasPieChart__wrapper"
-    );
-    if (canvasWrapper[0]) {
+    const canvasWrapper = refPie.current;
+    if (canvasWrapper) {
+      canvasWrapper.innerHTML = "";
       const canvasElem = document.createElement("canvas");
-      const wrapperWidth = canvasWrapper[0].offsetWidth;
+      const wrapperWidth = canvasWrapper.offsetWidth;
       const wrapperHeight = 0.75 * wrapperWidth;
       const radius = 0.25 * wrapperWidth;
       canvasElem.setAttribute("width", wrapperWidth);
       canvasElem.setAttribute("height", wrapperHeight);
       drawPieChart(canvasElem, wrapperWidth, wrapperHeight, radius);
       drawPieChartText(canvasElem);
-      canvasWrapper[0].appendChild(canvasElem);
+      canvasWrapper.appendChild(canvasElem);
     }
   };
   const drawPieChart = (item, wrapperWidth, wrapperHeight, radius) => {
@@ -43,7 +43,7 @@ const PieChartPercentCanvas = (props) => {
       }
       ctx.font = "14px Arial";
       ctx.fillStyle = "#333";
-      const text = pieData[i].name + pieData[i].value;
+      const text = `${pieData[i].name} ${pieData[i].value}`;
       ctx.fillText(text, text_X, text_Y);
       begin_deg = end_deg;
     }
@@ -61,10 +61,10 @@ const PieChartPercentCanvas = (props) => {
       ctx.fillText(pieData[i].name + " " + pieData[i].value, 25, 20 + 14 * i);
     }
   };
-  useEffect(pieChartInit, []);
+  useEffect(pieChartInit, [pieData]);
   return (
     <div className="canvasPieChart">
-      <div className="canvasPieChart__wrapper"></div>
+      <div ref={refPie} className="canvasPieChart__wrapper"></div>
     </div>
   );
 };

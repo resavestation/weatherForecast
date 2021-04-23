@@ -6,7 +6,27 @@ import PieChart from "./PieChart";
 
 const WeatherForecast = () => {
   const [data, setData] = useState([]);
-  console.log(data);
+  const color = ["#8bfdfc", "#46a2f7", "#3f74f7", "#3e44ff", "#127e41"];
+  const filterBarData = (data) => {
+    const newArr = [];
+    for (let i in data) {
+      newArr[i] = {};
+      newArr[i].name = data[i].applicable_date;
+      newArr[i].value = data[i].max_temp;
+      newArr[i].color = color[i];
+    }
+    return newArr;
+  };
+  const filterPieData = (data) => {
+    const newArr = [];
+    for (let i in data) {
+      newArr[i] = {};
+      newArr[i].name = data[i].applicable_date;
+      newArr[i].value = data[i].max_temp;
+      newArr[i].color = color[i];
+    }
+    return newArr;
+  };
   return (
     <div className="weatherForecast">
       <div className="weatherForecast__wrapper">
@@ -15,10 +35,10 @@ const WeatherForecast = () => {
             <LocationSearch callback={(value) => setData(value)} />
           </Col>
           <Col span={24}>
-            <BarChart data={data} />
+            {data.length > 0 && <BarChart barData={filterBarData(data)} />}
           </Col>
           <Col span={24}>
-            <PieChart data={data} />
+            {data.length > 0 && <PieChart pieData={filterPieData(data)} />}
           </Col>
         </Row>
       </div>

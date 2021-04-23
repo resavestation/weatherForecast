@@ -6,6 +6,7 @@
     "antd": "^4.15.2",
     "axios": "^0.21.1",
     "customize-cra": "^0.9.1",
+    "firebase": "^8.4.1",
     "react": "^17.0.2",
     "react-app-rewired": "^2.1.5",
     "react-dev-utils": "^11.0.4",

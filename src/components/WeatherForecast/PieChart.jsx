@@ -1,11 +1,14 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Spin } from "antd";
 
 const PieChartPercentCanvas = (props) => {
   const pieData = props.pieData ? props.pieData : [];
   const refPie = useRef();
+  const [loading, setLoading] = useState(false);
   const pieChartInit = () => {
     const canvasWrapper = refPie.current;
     if (canvasWrapper) {
+      setLoading(true);
       canvasWrapper.innerHTML = "";
       const canvasElem = document.createElement("canvas");
       const wrapperWidth = canvasWrapper.offsetWidth;
@@ -16,6 +19,10 @@ const PieChartPercentCanvas = (props) => {
       drawPieChart(canvasElem, wrapperWidth, wrapperHeight, radius);
       drawPieChartText(canvasElem);
       canvasWrapper.appendChild(canvasElem);
+      const timer = setTimeout(() => {
+        setLoading(false);
+        clearTimeout(timer);
+      }, 2000);
     }
   };
   const drawPieChart = (item, wrapperWidth, wrapperHeight, radius) => {
@@ -63,9 +70,11 @@ const PieChartPercentCanvas = (props) => {
   };
   useEffect(pieChartInit, [pieData]);
   return (
-    <div className="canvasPieChart">
-      <div ref={refPie} className="canvasPieChart__wrapper"></div>
-    </div>
+    <Spin tip="Pie Chart loading..." spinning={loading}>
+      <div className="canvasPieChart">
+        <div ref={refPie} className="canvasPieChart__wrapper"></div>
+      </div>
+    </Spin>
   );
 };
 export default PieChartPercentCanvas;

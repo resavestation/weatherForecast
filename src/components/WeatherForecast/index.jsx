@@ -8,7 +8,6 @@ import PieChart from "./PieChart";
 const WeatherForecast = () => {
   const [data, setData] = useState([]);
   const color = ["#8bfdfc", "#46a2f7", "#3f74f7", "#3e44ff", "#127e41"];
-  console.log(data);
   const filterBarDataMax = (data) => {
     const newArr = [];
     for (let i in data) {

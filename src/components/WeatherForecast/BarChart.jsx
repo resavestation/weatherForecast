@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { Spin } from "antd";
 
 const BarChartCanvas = (props) => {
   const barData = props.barData ? props.barData : [];
   const refBar = useRef();
+  const [loading, setLoading] = useState(false);
   const fontData = props.fontData
     ? props.fontData
     : {
@@ -13,6 +15,7 @@ const BarChartCanvas = (props) => {
   const barChartInit = () => {
     const canvasWrapper = refBar.current;
     if (canvasWrapper) {
+      setLoading(true);
       canvasWrapper.innerHTML = "";
       const canvasElem = document.createElement("canvas");
       const wrapperWidth = canvasWrapper.offsetWidth;
@@ -32,6 +35,10 @@ const BarChartCanvas = (props) => {
       drawBarChart(canvasElem, unitWidth, unitHeight, wrapperHeight);
       drawBarChartText(canvasElem);
       canvasWrapper.appendChild(canvasElem);
+      const timer = setTimeout(() => {
+        setLoading(false);
+        clearTimeout(timer);
+      }, 2000);
     }
   };
   const drawBarChart = (item, unitWidth, unitHeight, wrapperHeight) => {
@@ -73,9 +80,11 @@ const BarChartCanvas = (props) => {
   };
   useEffect(barChartInit, [barData]);
   return (
-    <div className="canvasBarChart">
-      <div ref={refBar} className="canvasBarChart__wrapper"></div>
-    </div>
+    <Spin tip="Bar Chart loading..." spinning={loading}>
+      <div className="canvasBarChart">
+        <div ref={refBar} className="canvasBarChart__wrapper"></div>
+      </div>
+    </Spin>
   );
 };
 export default BarChartCanvas;
